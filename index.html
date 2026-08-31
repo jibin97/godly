@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#F8F4EA">
+    <meta name="description" content="Ask. Seek. Receive. A quiet moment with Scripture.">
+    <title>Ask. Seek. Receive.</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="header">
+            <h1>Ask. Seek. Receive.</h1>
+            <p>Let His Word guide you.</p>
+        </header>
+
+        <div class="language-toggle" role="group" aria-label="Language selection">
+            <button type="button" class="language active" data-language="en">EN</button>
+            <span aria-hidden="true">·</span>
+            <button type="button" class="language" data-language="ml">ML</button>
+        </div>
+
+        <section class="experience" aria-live="polite">
+
+            <div class="light-aura" aria-hidden="true"></div>
+
+            <button
+                id="divineButton"
+                class="divine-button"
+                type="button"
+                aria-label="Ask for a Bible verse"
+            >
+                <span class="button-symbol" aria-hidden="true">✦</span>
+                <span class="button-label">Ask</span>
+            </button>
+
+            <div id="verseContainer" class="verse-container" aria-hidden="true">
+                <blockquote id="verseText"></blockquote>
+                <p id="verseReference" class="verse-reference"></p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

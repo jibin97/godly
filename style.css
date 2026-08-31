@@ -1,0 +1,577 @@
+/* =========================================================
+   Ask. Seek. Receive.
+   ========================================================= */
+
+:root {
+    --ivory: #F8F4EA;
+    --ivory-deep: #F1EBDD;
+    --gold: #D4AF6A;
+    --gold-light: #E8D19B;
+    --gold-dark: #B9924D;
+    --forest: #24352B;
+    --brown: #8C8065;
+    --white: #FFFDF7;
+
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: "Inter", "Noto Sans Malayalam", "Nirmala UI", sans-serif;
+
+    --transition: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    background: var(--ivory);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--forest);
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(232, 209, 155, 0.16) 0%,
+            rgba(248, 244, 234, 0) 42%
+        ),
+        var(--ivory);
+
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+button {
+    font: inherit;
+}
+
+.app {
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.header {
+    position: absolute;
+    z-index: 10;
+    top: clamp(2.4rem, 7vh, 5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    text-align: center;
+    pointer-events: none;
+}
+
+.header h1 {
+    margin: 0;
+    color: var(--forest);
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+}
+
+.header p {
+    margin: 0.65rem 0 0;
+    color: var(--brown);
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    opacity: 0.72;
+}
+
+/* =========================================================
+   Language Toggle
+   ========================================================= */
+
+.language-toggle {
+    position: absolute;
+    z-index: 20;
+    top: clamp(1.5rem, 4vh, 2.5rem);
+    right: clamp(1.25rem, 4vw, 3.5rem);
+
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    color: var(--brown);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+
+    opacity: 0.72;
+}
+
+.language {
+    padding: 0.25rem 0.15rem;
+    border: 0;
+    outline: none;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    font-size: inherit;
+    letter-spacing: inherit;
+    transition:
+        color 300ms ease,
+        opacity 300ms ease;
+}
+
+.language:hover {
+    color: var(--gold-dark);
+}
+
+.language.active {
+    color: var(--forest);
+    opacity: 1;
+}
+
+.language:focus-visible {
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(212, 175, 106, 0.45);
+}
+
+/* =========================================================
+   Main Experience
+   ========================================================= */
+
+.experience {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 8rem 1.5rem 5rem;
+}
+
+/* =========================================================
+   Ambient Light
+   ========================================================= */
+
+.light-aura {
+    position: absolute;
+    z-index: -1;
+
+    width: min(65vw, 38rem);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(232, 209, 155, 0.30) 0%,
+            rgba(212, 175, 106, 0.13) 22%,
+            rgba(212, 175, 106, 0.04) 48%,
+            transparent 70%
+        );
+
+    filter: blur(12px);
+    pointer-events: none;
+
+    animation: breathe 6s ease-in-out infinite;
+}
+
+/* =========================================================
+   Divine Button
+   ========================================================= */
+
+.divine-button {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: clamp(9rem, 24vw, 12.5rem);
+    aspect-ratio: 1;
+
+    padding: 0;
+    border: 1px solid rgba(185, 146, 77, 0.28);
+    border-radius: 50%;
+
+    color: var(--forest);
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            #fffef8 0%,
+            #fffaf0 35%,
+            #f4e8c9 100%
+        );
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.65) inset,
+        0 0 2rem rgba(212, 175, 106, 0.22),
+        0 0 5rem rgba(212, 175, 106, 0.10),
+        0 1.5rem 3rem rgba(77, 62, 35, 0.08);
+
+    cursor: pointer;
+
+    transition:
+        transform 600ms var(--transition),
+        box-shadow 600ms var(--transition),
+        opacity 500ms ease;
+}
+
+.divine-button::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+
+    border: 1px solid rgba(212, 175, 106, 0.16);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.divine-button::after {
+    content: "";
+    position: absolute;
+    inset: -0.8rem;
+
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 106, 0.08);
+
+    opacity: 0;
+
+    transition: opacity 500ms ease;
+}
+
+.divine-button:hover {
+    transform: scale(1.045);
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+        0 0 2.8rem rgba(212, 175, 106, 0.32),
+        0 0 6rem rgba(212, 175, 106, 0.15),
+        0 1.8rem 3.5rem rgba(77, 62, 35, 0.10);
+}
+
+.divine-button:hover::after {
+    opacity: 1;
+}
+
+.divine-button:active {
+    transform: scale(0.975);
+}
+
+.divine-button:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px var(--ivory),
+        0 0 0 5px rgba(185, 146, 77, 0.7),
+        0 0 3rem rgba(212, 175, 106, 0.3);
+}
+
+.button-symbol {
+    display: block;
+
+    color: var(--gold-dark);
+    font-family: var(--serif);
+    font-size: clamp(1.7rem, 4vw, 2.2rem);
+    line-height: 1;
+
+    text-shadow:
+        0 0 1rem rgba(212, 175, 106, 0.35);
+
+    animation: symbolGlow 4s ease-in-out infinite;
+}
+
+.button-label {
+    margin-top: 0.8rem;
+
+    color: var(--forest);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   Verse
+   ========================================================= */
+
+.verse-container {
+    position: absolute;
+
+    width: min(760px, calc(100% - 2.5rem));
+
+    text-align: center;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(22px);
+    filter: blur(8px);
+
+    transition:
+        opacity 900ms var(--transition),
+        transform 1100ms var(--transition),
+        filter 1100ms var(--transition),
+        visibility 0s linear 1100ms;
+}
+
+.verse-container.visible {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+    filter: blur(0);
+
+    transition:
+        opacity 1000ms var(--transition),
+        transform 1200ms var(--transition),
+        filter 1200ms var(--transition),
+        visibility 0s;
+}
+
+.verse-container blockquote {
+    margin: 0;
+
+    color: var(--forest);
+
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3.3vw, 2.65rem);
+    font-weight: 400;
+    line-height: 1.45;
+
+    letter-spacing: -0.015em;
+}
+
+.verse-container.ml blockquote {
+    font-family:
+        "Noto Sans Malayalam",
+        "Nirmala UI",
+        "Kartika",
+        sans-serif;
+
+    font-size: clamp(1.35rem, 3vw, 2.35rem);
+    line-height: 1.75;
+}
+
+.verse-reference {
+    margin: 1.6rem 0 0;
+
+    color: var(--brown);
+
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    opacity: 0.85;
+}
+
+/* =========================================================
+   Revealing Individual Words
+   ========================================================= */
+
+.verse-word {
+    display: inline-block;
+
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(5px);
+
+    animation: wordReveal 700ms var(--transition) forwards;
+}
+
+.verse-word + .verse-word {
+    margin-left: 0.25em;
+}
+
+/* =========================================================
+   State: Verse Displayed
+   ========================================================= */
+
+.experience.has-verse .divine-button {
+    width: clamp(6.5rem, 18vw, 8rem);
+
+    position: absolute;
+    bottom: clamp(2rem, 5vh, 3.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+
+    box-shadow:
+        0 0 1.8rem rgba(212, 175, 106, 0.18),
+        0 1rem 2rem rgba(77, 62, 35, 0.06);
+}
+
+.experience.has-verse .divine-button:hover {
+    transform: translateX(-50%) scale(1.04);
+}
+
+.experience.has-verse .button-symbol {
+    font-size: 1.35rem;
+}
+
+.experience.has-verse .button-label {
+    margin-top: 0.4rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+}
+
+.experience.has-verse .verse-container {
+    position: relative;
+    left: auto;
+    top: auto;
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+
+@keyframes breathe {
+    0%,
+    100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+}
+
+@keyframes symbolGlow {
+    0%,
+    100% {
+        opacity: 0.72;
+        transform: scale(0.96);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.04);
+    }
+}
+
+@keyframes wordReveal {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* =========================================================
+   Reduced Motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .verse-word {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .header {
+        top: 5.5rem;
+    }
+
+    .header h1 {
+        font-size: 1.05rem;
+        letter-spacing: 0.055em;
+    }
+
+    .header p {
+        margin-top: 0.5rem;
+        font-size: 0.6rem;
+    }
+
+    .language-toggle {
+        top: 1.4rem;
+        right: 1.25rem;
+    }
+
+    .experience {
+        padding:
+            9rem
+            1.35rem
+            6rem;
+    }
+
+    .light-aura {
+        width: 110vw;
+    }
+
+    .verse-container {
+        width: min(100%, 34rem);
+    }
+
+    .verse-container blockquote {
+        font-size: clamp(1.45rem, 6vw, 2rem);
+        line-height: 1.5;
+    }
+
+    .verse-container.ml blockquote {
+        font-size: clamp(1.3rem, 5.6vw, 1.85rem);
+        line-height: 1.8;
+    }
+
+    .verse-reference {
+        margin-top: 1.25rem;
+        font-size: 0.64rem;
+    }
+
+    .experience.has-verse .divine-button {
+        bottom: 1.75rem;
+    }
+}
+
+/* =========================================================
+   Very Small Screens
+   ========================================================= */
+
+@media (max-height: 650px) {
+    .header {
+        top: 1.5rem;
+    }
+
+    .experience {
+        padding-top: 6rem;
+    }
+
+    .divine-button {
+        width: 8.5rem;
+    }
+
+    .experience.has-verse .divine-button {
+        bottom: 1rem;
+    }
+}
