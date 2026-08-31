@@ -13,47 +13,41 @@
 <body>
     <main class="app">
 
-        <header class="header">
-            <!-- Secret Love Note -->
-            <div class="love-note-trigger">
-                <button id="loveHeart" class="love-heart" aria-label="Hold for a little secret" type="button">
-                    ♡
+        <!-- Secret Love Note -->
+        <div class="love-note-trigger">
+            <button id="loveHeart" class="love-heart" aria-label="Hold for a little secret" type="button">
+                ♡
+            </button>
+        </div>
+
+        <!-- Love Note Popup -->
+        <div id="loveNote" class="love-note" role="dialog" aria-modal="true" aria-label="A little note">
+            <div class="love-note-content">
+                <button id="closeLoveNote" class="close-love-note" aria-label="Close" type="button">
+                    ×
                 </button>
+
+                <div class="love-note-heart">♡</div>
+
+                <p class="love-note-title">
+                    Dear Ann
+                </p>
+
+                <p class="love-note-message">
+                    I choose you, I cherish you, and I’ll keep choosing you—every single day. 🤍
+                </p>
+
+                <p class="love-note-signature">
+                    — jbn
+                </p>
             </div>
-
-            <!-- Love Note Popup -->
-            <div id="loveNote" class="love-note" role="dialog" aria-modal="true" aria-label="A little note">
-                <div class="love-note-content">
-                    <button id="closeLoveNote" class="close-love-note" aria-label="Close" type="button">
-                        ×
-                    </button>
-
-                    <div class="love-note-heart">♡</div>
-
-                    <p class="love-note-title">
-                        Dear Ann
-                    </p>
-
-                    <p class="love-note-message">
-                        I choose you, I cherish you, and I’ll keep choosing you—every single day. 🤍
-                    </p>
-
-                    <p class="love-note-signature">
-                        — jbn
-                    </p>
-                </div>
-            </div>
+        </div>
 
 
-            <!-- Main Title -->
-            <header class="hero-header">
-                <h1>Ask. Seek. Receive.</h1>
-
-                <p>Let His Word guide you.</p>
-            </header>
-            ```
-
+        <!-- Main Title -->
+        <header class="hero-header">
             <h1>Ask. Seek. Receive.</h1>
+
             <p>Let His Word guide you.</p>
         </header>
 
