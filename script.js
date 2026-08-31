@@ -239,30 +239,6 @@ languageButtons.forEach(button => {
    SECRET LOVE NOTE
    ========================================================= */
 
-const loveAffirmations = [
-    "I choose you, today, tomorrow, and every day after.",
-    "You are my favorite person, my safe place, and my home.",
-    "I hope you always know how deeply you are loved by me.",
-    "I don’t just love you—I’m grateful for you.",
-    "You deserve a love that makes you feel certain, and I’ll give you mine.",
-    "My heart feels at peace when it’s with you.",
-    "I’ll keep choosing you, even on the ordinary days.",
-    "You are enough, exactly as you are, and I love you for it.",
-    "I want to be the reason you feel loved, never the reason you doubt it.",
-    "You have my heart, completely and genuinely.",
-    "I’m lucky to love you, and even luckier to be loved by you.",
-    "No matter how much time passes, I’ll never stop appreciating you.",
-    "With you, love feels natural, peaceful, and real.",
-    "I’ll always remind you of how special you are to me.",
-    "You are the love I never want to take for granted.",
-    "My love for you isn’t temporary—it’s a choice I make every day.",
-    "I want to grow with you, laugh with you, and love you through it all.",
-    "You make my heart feel like it’s exactly where it belongs.",
-    "I see you, I appreciate you, and I love you more than words can say.",
-    "If I had to choose again, I’d still choose you."
-];
-
-
 const loveHeart = document.getElementById("loveHeart");
 const loveNote = document.getElementById("loveNote");
 const closeLoveNote = document.getElementById("closeLoveNote");
