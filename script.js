@@ -1,401 +1,246 @@
-
 /* =========================================================
-   ASK. SEEK. RECEIVE.
-   Main Application Logic
+   Elements
    ========================================================= */
 
-/* ---------------------------------------------------------
-   DOM Elements
-   --------------------------------------------------------- */
-
 const divineButton = document.getElementById("divineButton");
+const experience = document.querySelector(".experience");
 const verseContainer = document.getElementById("verseContainer");
 const verseText = document.getElementById("verseText");
 const verseReference = document.getElementById("verseReference");
-
-const langEn = document.getElementById("langEn");
-const langMl = document.getElementById("langMl");
+const languageButtons = document.querySelectorAll(".language");
 
 
-/* ---------------------------------------------------------
-   Application State
-   --------------------------------------------------------- */
+/* =========================================================
+   State
+   ========================================================= */
 
-// English is the default language.
-// Remember the user's choice between visits.
-let currentLanguage = localStorage.getItem("language") || "en";
+const savedLanguage = localStorage.getItem("bibleLanguage");
 
-// The verse currently being displayed.
+let currentLanguage =
+    savedLanguage === "ml" || savedLanguage === "en"
+        ? savedLanguage
+        : "en";
+
 let currentVerse = null;
-
-// Prevent the same verse from appearing twice consecutively.
 let lastVerseId = null;
-
-// Prevent multiple clicks while the reveal animation is running.
 let isRevealing = false;
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    Language
-   --------------------------------------------------------- */
+   ========================================================= */
 
 function setLanguage(language) {
-    if (language !== "en" && language !== "ml") {
-        return;
-    }
-
     currentLanguage = language;
 
-    // Save language preference.
-    localStorage.setItem("language", language);
+    localStorage.setItem("bibleLanguage", language);
 
-    // Update HTML language attribute.
     document.documentElement.lang = language;
 
-    // Update visual state of language buttons.
-    updateLanguageToggle();
+    languageButtons.forEach(button => {
+        const isActive = button.dataset.language === language;
 
-    // If a verse is already visible,
-    // change ONLY its language.
-    // Do not generate a new verse.
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    /*
+     * If a verse is already visible, simply change its language.
+     * Do NOT select another verse.
+     */
     if (currentVerse) {
-        displayCurrentVerse();
+        displayVerse(currentVerse, false);
     }
 }
 
 
-function updateLanguageToggle() {
-    if (langEn) {
-        langEn.classList.toggle(
-            "active",
-            currentLanguage === "en"
-        );
-    }
-
-    if (langMl) {
-        langMl.classList.toggle(
-            "active",
-            currentLanguage === "ml"
-        );
-    }
-}
-
-
-/* ---------------------------------------------------------
+/* =========================================================
    Random Verse
-   --------------------------------------------------------- */
+   ========================================================= */
 
 function getRandomVerse() {
-
-    // Safety check.
-    if (!Array.isArray(verses) || verses.length === 0) {
-        console.error("No verses found in verses.js");
-        return null;
-    }
-
-    // If there is only one verse, simply return it.
-    if (verses.length === 1) {
-        return verses[0];
-    }
-
-    // Remove the previous verse from the possibilities.
     const availableVerses = verses.filter(
         verse => verse.id !== lastVerseId
     );
 
-    // Pick a random verse.
     const randomIndex = Math.floor(
         Math.random() * availableVerses.length
     );
 
-    const selectedVerse = availableVerses[randomIndex];
-
-    // Remember it so it cannot immediately repeat.
-    lastVerseId = selectedVerse.id;
-
-    return selectedVerse;
+    return availableVerses[randomIndex];
 }
 
 
-/* ---------------------------------------------------------
-   Display Current Verse
-   --------------------------------------------------------- */
+/* =========================================================
+   Verse Rendering
+   ========================================================= */
 
-function displayCurrentVerse() {
+function createAnimatedWords(text) {
+    /*
+     * Splitting on whitespace preserves Malayalam characters
+     * while allowing a gentle word-by-word reveal.
+     */
+    const words = text.trim().split(/\s+/);
 
-    if (!currentVerse) {
+    return words.map((word, index) => {
+        const span = document.createElement("span");
+
+        span.className = "verse-word";
+        span.textContent = word;
+
+        /*
+         * Small stagger between words.
+         * Capped so long verses don't take excessively long.
+         */
+        const delay = Math.min(index * 35, 900);
+
+        span.style.animationDelay = `${delay}ms`;
+
+        return span;
+    });
+}
+
+
+function displayVerse(verse, animate = true) {
+    if (!verse) {
         return;
     }
 
-    const text =
-        currentVerse.text[currentLanguage];
+    currentVerse = verse;
 
-    const reference =
-        currentVerse.reference[currentLanguage];
+    const text = verse.text[currentLanguage];
+    const reference = verse.reference[currentLanguage];
 
-    if (verseText) {
+    verseText.innerHTML = "";
+    verseReference.textContent = `— ${reference}`;
+
+    verseContainer.classList.toggle(
+        "ml",
+        currentLanguage === "ml"
+    );
+
+    if (animate) {
+        const words = createAnimatedWords(text);
+
+        words.forEach((word, index) => {
+            verseText.appendChild(word);
+
+            if (index < words.length - 1) {
+                verseText.appendChild(
+                    document.createTextNode(" ")
+                );
+            }
+        });
+    } else {
         verseText.textContent = text;
     }
 
-    if (verseReference) {
-        verseReference.textContent = `— ${reference}`;
-    }
+    verseContainer.setAttribute("aria-hidden", "false");
 }
 
 
-/* ---------------------------------------------------------
-   Verse Reveal
-   --------------------------------------------------------- */
+/* =========================================================
+   Reveal Sequence
+   ========================================================= */
 
 function revealVerse() {
-
-    // Prevent accidental double clicks during animation.
     if (isRevealing) {
         return;
     }
 
     isRevealing = true;
 
-    // Select a new verse.
-    currentVerse = getRandomVerse();
+    const newVerse = getRandomVerse();
 
-    if (!currentVerse) {
-        isRevealing = false;
-        return;
-    }
+    lastVerseId = newVerse.id;
 
-    // Get the translated text.
-    const text =
-        currentVerse.text[currentLanguage];
-
-    const reference =
-        currentVerse.reference[currentLanguage];
-
-
-    /* -----------------------------------------------------
-       Prepare the verse
-       ----------------------------------------------------- */
-
-    if (verseText) {
-        verseText.textContent = "";
-    }
-
-    if (verseReference) {
-        verseReference.textContent = "";
-    }
-
-
-    /* -----------------------------------------------------
-       Transform the button
-       ----------------------------------------------------- */
-
-    if (divineButton) {
-        divineButton.classList.add("revealing");
-    }
-
-    if (verseContainer) {
-        verseContainer.classList.remove("visible");
-        verseContainer.classList.add("revealing");
-    }
-
-
-    /* -----------------------------------------------------
-       Wait briefly before revealing the words
-       ----------------------------------------------------- */
+    /*
+     * Let the button breathe away before the Scripture appears.
+     */
+    divineButton.style.opacity = "0";
+    divineButton.style.transform = "scale(0.92)";
 
     setTimeout(() => {
+        displayVerse(newVerse, true);
 
-        if (!verseText) {
-            finishReveal();
-            return;
-        }
+        experience.classList.add("has-verse");
 
-        // Split the verse into individual words.
-        const words = text.split(" ");
-
-        words.forEach((word, index) => {
-
-            const span = document.createElement("span");
-
-            span.textContent =
-                word + (index < words.length - 1 ? " " : "");
-
-            span.className = "verse-word";
-
-            // Progressive delay.
-            span.style.animationDelay =
-                `${index * 35}ms`;
-
-            verseText.appendChild(span);
+        /*
+         * Give the verse its own quiet entrance.
+         */
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                verseContainer.classList.add("visible");
+            });
         });
 
     }, 350);
 
 
-    /* -----------------------------------------------------
-       Reveal reference after the verse
-       ----------------------------------------------------- */
-
-    const verseDuration =
-        Math.max(1000, text.split(" ").length * 35 + 600);
-
+    /*
+     * Bring the button back as the smaller "Ask Again"
+     * after the verse has begun appearing.
+     */
     setTimeout(() => {
+        divineButton.style.opacity = "1";
+        divineButton.style.transform = "translateX(-50%) scale(1)";
 
-        if (verseReference) {
-            verseReference.textContent =
-                `— ${reference}`;
+        divineButton.setAttribute(
+            "aria-label",
+            "Ask for another Bible verse"
+        );
 
-            verseReference.classList.add("visible");
-        }
+        const label = divineButton.querySelector(".button-label");
+        label.textContent = "Ask Again";
 
-    }, verseDuration);
-
-
-    /* -----------------------------------------------------
-       Complete animation
-       ----------------------------------------------------- */
-
-    setTimeout(() => {
-
-        if (verseContainer) {
-            verseContainer.classList.remove("revealing");
-            verseContainer.classList.add("visible");
-        }
-
-        if (divineButton) {
-            divineButton.classList.remove("revealing");
-            divineButton.classList.add("revealed");
-        }
-
-        finishReveal();
-
-    }, verseDuration + 500);
+        isRevealing = false;
+    }, 1500);
 }
 
 
-/* ---------------------------------------------------------
-   Finish Reveal
-   --------------------------------------------------------- */
+/* =========================================================
+   Button Interaction
+   ========================================================= */
 
-function finishReveal() {
-    isRevealing = false;
-}
-
-
-/* ---------------------------------------------------------
-   Ask Again
-   --------------------------------------------------------- */
-
-function askAgain() {
-
+divineButton.addEventListener("click", () => {
     if (isRevealing) {
         return;
     }
 
-    // Hide the current verse first.
-    if (verseContainer) {
-        verseContainer.classList.remove("visible");
-    }
-
-    if (verseReference) {
-        verseReference.classList.remove("visible");
-    }
-
-    // Give the UI a tiny breathing moment.
-    setTimeout(() => {
-
+    /*
+     * First press: reveal.
+     * Later presses: gracefully replace the current verse.
+     */
+    if (!currentVerse) {
         revealVerse();
-
-    }, 250);
-}
-
-
-/* ---------------------------------------------------------
-   Button Click
-   --------------------------------------------------------- */
-
-if (divineButton) {
-
-    divineButton.addEventListener(
-        "click",
-        () => {
-
-            // First click reveals a verse.
-            // Later clicks reveal another verse.
-            revealVerse();
-
-        }
-    );
-}
-
-
-/* ---------------------------------------------------------
-   Language Buttons
-   --------------------------------------------------------- */
-
-if (langEn) {
-
-    langEn.addEventListener(
-        "click",
-        () => {
-            setLanguage("en");
-        }
-    );
-}
-
-
-if (langMl) {
-
-    langMl.addEventListener(
-        "click",
-        () => {
-            setLanguage("ml");
-        }
-    );
-}
-
-
-/* ---------------------------------------------------------
-   Keyboard Accessibility
-   --------------------------------------------------------- */
-
-// Buttons already support Enter and Space naturally.
-// This section is intentionally kept minimal.
-
-
-/* ---------------------------------------------------------
-   Initial Setup
-   --------------------------------------------------------- */
-
-function initializeApp() {
-
-    // Set the correct HTML language.
-    document.documentElement.lang =
-        currentLanguage;
-
-    // Update EN / ML visual state.
-    updateLanguageToggle();
-
-    // Make sure no verse is initially visible.
-    if (verseContainer) {
-        verseContainer.classList.remove("visible");
-        verseContainer.classList.remove("revealing");
+        return;
     }
 
-    if (verseReference) {
-        verseReference.classList.remove("visible");
-    }
+    verseContainer.classList.remove("visible");
 
-    // Make sure the main button starts in its original state.
-    if (divineButton) {
-        divineButton.classList.remove("revealing");
-        divineButton.classList.remove("revealed");
-    }
-}
+    divineButton.style.opacity = "0.35";
+
+    setTimeout(() => {
+        revealVerse();
+    }, 550);
+});
 
 
-/* ---------------------------------------------------------
-   Start
-   --------------------------------------------------------- */
+/* =========================================================
+   Language Interaction
+   ========================================================= */
 
-initializeApp();
+languageButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        setLanguage(button.dataset.language);
+    });
+});
+
+
+/* =========================================================
+   Initial State
+   ========================================================= */
+
+setLanguage(currentLanguage);
+
+document.documentElement.lang = currentLanguage;
